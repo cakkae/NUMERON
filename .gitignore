@@ -1,0 +1,25 @@
+# Dependencies and build output
+node_modules/
+.next/
+dist/
+coverage/
+
+# Secrets and local configuration
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Real accounting data — never commit
+/private-fixtures/raw/
+/private-fixtures/redacted/
+/private-fixtures/expected/
+/private-fixtures/*.xls
+/private-fixtures/*.xlsx
+/private-fixtures/*.csv
+/private-fixtures/*.pdf
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.vscode/
