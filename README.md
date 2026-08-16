@@ -11,3 +11,10 @@ Detaljan plan razvoja je u [e-kuf-e-kif-saas-plan.md](e-kuf-e-kif-saas-plan.md).
 3. Pokrenuti `npm install` pa `npm run dev`.
 
 Faza 1 namjerno sadrži samo prijavu, izbor dodijeljene firme i osnovni pregled. KUF, KIF i izvoz nisu implementirani.
+
+## Pristup
+
+Postoje samo dvije role:
+
+- `owner` je vlasnik računovodstvenog servisa i ujedno njegov knjigovođa. Može imati pristup većem broju klijentskih firmi.
+- `client` ima pristup samo svojoj dodijeljenoj firmi i njenom pregledu. Preuzimanje i dostava faktura bit će dodani uz modul dokumenata; nisu dio Faze 1.
