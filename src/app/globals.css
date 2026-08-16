@@ -188,6 +188,13 @@ button.metric-card:hover { border-color: #bfdbfe; transform: translateY(-2px); b
 .amount-input input { padding-right: 45px; }
 .amount-input span { position: absolute; top: 50%; right: 12px; color: var(--slate-400); font-size: .7rem; font-weight: 700; transform: translateY(-50%); }
 .drawer-note { padding: 12px 13px; border: 1px solid #dbeafe; border-radius: 8px; color: #1e40af; background: #eff6ff; font-size: .68rem; line-height: 1.5; }
+.form-section { display: grid; gap: 12px; padding-top: 2px; }
+.form-section > div:first-child strong { color: var(--slate-800); font-size: .76rem; }
+.form-section > div:first-child p { margin: 3px 0 0; color: var(--slate-500); font-size: .67rem; line-height: 1.5; }
+.uino-fields { align-items: end; }
+.additional-fields { border: 1px solid var(--slate-200); border-radius: 9px; background: var(--slate-50); }
+.additional-fields summary { padding: 12px 13px; color: var(--slate-700); cursor: pointer; font-size: .72rem; font-weight: 750; }
+.additional-fields .uino-fields { padding: 4px 13px 14px; }
 .drawer-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 8px; padding-top: 18px; border-top: 1px solid var(--slate-100); }
 .modal-card { position: absolute; top: 50%; left: 50%; width: min(440px, calc(100% - 28px)); border-radius: 13px; overflow: hidden; background: white; box-shadow: 0 25px 70px #07111f35; transform: translate(-50%, -50%); }
 .modal-title-icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9px; color: var(--blue-600); background: #eff6ff; }

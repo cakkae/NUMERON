@@ -23,3 +23,7 @@ KUF i KIF koriste isti validation engine. Tipovi dokumenata `01–09` nalaze se 
 ## 2026-08-16 — UI workspace
 
 UI je podijeljen na shell komponente i poslovni workspace hook. Dashboard je pregled, KUF/KIF i Partneri su odvojeni radni pogledi, a forme se otvaraju u desnom panelu. Supabase upiti i validation engine ostaju izvan prezentacijskih komponenti.
+
+## 2026-08-16 — UINO model bez izmišljanja PDV-a
+
+UINO monetarna polja su nullable i unose se ručno; aplikacija ne računa PDV po fiksnoj stopi. Legacy `amount` ostaje radi kompatibilnosti i zrcali samo ukupni iznos (`invoice_amount_with_vat` za KUF, `invoice_total_amount` za KIF). Stare KUF stavke dobijaju `received_date = invoice_date` kao najmanju sigurnu migracijsku pretpostavku jer prethodni model nije čuvao datum prijema. Identifikatori partnera mogu biti prazni za neobveznika, a tip 04 zahtijeva UINO vrijednosti od 12 odnosno 13 nula. Detaljno mapiranje i otvorene potvrde su u `docs/uino-field-mapping.md`.
