@@ -15,3 +15,7 @@ Seed sadrži samo izmišljeni workspace i firme. Testne korisnike treba kreirati
 ## 2026-08-16 — KUF minimum
 
 KUF stavka u Fazi 2 sadrži partnera, broj i datum fakture te ukupni iznos. PDV broj je 12 cifara, a JIB 13 cifara. Period je `open` ili `locked`; RLS politika baze i UI zajedno sprječavaju izmjene stavki u zaključanom periodu.
+
+## 2026-08-16 — Zajednička validacija KUF/KIF
+
+KUF i KIF koriste isti validation engine. Tipovi dokumenata `01–09` nalaze se u jednoj konfiguraciji verzije `2023-01`. Status `ready_for_export` samo označava da period nema blokirajućih grešaka; CSV se u Fazi 3 ne generiše.

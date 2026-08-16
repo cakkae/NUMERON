@@ -8,7 +8,7 @@ export default [
     rules: {
       "no-constant-binary-expression": "error",
       "no-duplicate-imports": "error",
-      "no-unused-vars": "error",
+      "no-unused-vars": ["error", { args: "none" }],
     },
   },
 ];
