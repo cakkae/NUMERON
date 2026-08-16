@@ -10,7 +10,7 @@ Detaljan plan razvoja je u [e-kuf-e-kif-saas-plan.md](e-kuf-e-kif-saas-plan.md).
 2. Primijeniti SQL iz `supabase/migrations/` i, po želji, `supabase/seed.sql` na lokalni Supabase projekt.
 3. Pokrenuti `npm install` pa `npm run dev`.
 
-Faza 1 namjerno sadrži samo prijavu, izbor dodijeljene firme i osnovni pregled. KUF, KIF i izvoz nisu implementirani.
+Trenutno su dostupni prijava, izbor dodijeljene firme, porezni periodi, partneri i osnovni KUF unos. KIF i izvoz nisu implementirani.
 
 ## Pristup
 
