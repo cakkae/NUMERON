@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { getPeriodValidationStatus, isValidOrEmptyJib, isValidOrEmptyVatNumber, validateBookEntries, validateEntryForm } from "@/lib/validation-engine";
-import type { BookTable, Company, Entry, EntryForm, ExportArchive, Partner, PartnerForm, Period } from "@/types/accounting";
+import type { BookTable, Company, Entry, EntryForm, ExportArchive, InvoiceDocument, Partner, PartnerForm, Period } from "@/types/accounting";
 
 export function useAccountingWorkspace() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -15,6 +15,7 @@ export function useAccountingWorkspace() {
   const [purchases, setPurchases] = useState<Entry[]>([]);
   const [sales, setSales] = useState<Entry[]>([]);
   const [exportArchives, setExportArchives] = useState<ExportArchive[]>([]);
+  const [documents, setDocuments] = useState<InvoiceDocument[]>([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -63,7 +64,7 @@ export function useAccountingWorkspace() {
   }
 
   async function loadEntries(periodId: string) {
-    const common = "id, company_id, tax_period_id, partner_id, document_type, invoice_number, invoice_date, amount, is_archived";
+    const common = "id, company_id, tax_period_id, partner_id, source_document_id, document_type, invoice_number, invoice_date, amount, is_archived";
     const purchaseSelect = `${common}, received_date, invoice_amount_excluding_vat, invoice_amount_with_vat, flat_rate_compensation, input_vat_amount, deductible_input_vat, non_deductible_input_vat, input_vat_field_32, input_vat_field_33, input_vat_field_34`;
     const salesSelect = `${common}, invoice_total_amount, internal_invoice_amount, export_invoice_amount, vat_exempt_supply_amount, taxable_base_registered, output_vat_registered, taxable_base_non_registered, output_vat_non_registered, output_vat_field_32, output_vat_field_33, output_vat_field_34`;
     const supabase = createSupabaseBrowserClient();
@@ -74,6 +75,12 @@ export function useAccountingWorkspace() {
     if (purchaseResult.error || salesResult.error) return setMessage(purchaseResult.error?.message ?? salesResult.error?.message ?? "Greška pri učitavanju stavki.");
     setPurchases((purchaseResult.data ?? []) as Entry[]);
     setSales((salesResult.data ?? []) as Entry[]);
+  }
+
+  async function loadDocuments(companyId: string) {
+    const { data, error } = await createSupabaseBrowserClient().from("invoice_documents").select("id, company_id, tax_period_id, uploaded_by, original_filename, mime_type, byte_size, sha256, status, suggested_ledger, linked_entry_id, created_at, updated_at").eq("company_id", companyId).order("created_at", { ascending: false });
+    if (error) return setMessage(error.message);
+    setDocuments((data ?? []) as InvoiceDocument[]);
   }
 
   async function loadExports(periodId: string) {
@@ -89,7 +96,7 @@ export function useAccountingWorkspace() {
       setLoading(false);
     });
   }, []);
-  useEffect(() => { if (activeCompanyId) void loadCompanyData(activeCompanyId); }, [activeCompanyId]);
+  useEffect(() => { if (activeCompanyId) { void loadCompanyData(activeCompanyId); void loadDocuments(activeCompanyId); } else setDocuments([]); }, [activeCompanyId]);
   useEffect(() => { if (activePeriodId) { void loadEntries(activePeriodId); void loadExports(activePeriodId); } else { setPurchases([]); setSales([]); setExportArchives([]); } }, [activePeriodId]);
 
   async function signIn(email: string, password: string) {
@@ -176,5 +183,10 @@ export function useAccountingWorkspace() {
     await loadEntries(activePeriod.id);
   }
 
-  return { userEmail, loading, companies, activeCompanyId, setActiveCompanyId, activeCompany, periods, activePeriodId, setActivePeriodId, activePeriod, periodIsOpen, partners, purchases, sales, exportArchives, refreshExports: loadExports, kufErrors, kifErrors, validationStatus, message, setMessage, signIn, signOut, createPeriod, setPeriodStatus, createPartner, saveEntry, mutateEntry };
+  async function refreshAfterDocumentPosting(periodId: string) {
+    if (activeCompany) await loadDocuments(activeCompany.id);
+    if (periodId === activePeriodId) await loadEntries(periodId);
+  }
+
+  return { userEmail, loading, companies, activeCompanyId, setActiveCompanyId, activeCompany, periods, activePeriodId, setActivePeriodId, activePeriod, periodIsOpen, partners, purchases, sales, documents, refreshDocuments: loadDocuments, refreshAfterDocumentPosting, exportArchives, refreshExports: loadExports, kufErrors, kifErrors, validationStatus, message, setMessage, signIn, signOut, createPeriod, setPeriodStatus, createPartner, saveEntry, mutateEntry };
 }

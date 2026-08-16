@@ -13,6 +13,7 @@ export type Entry = {
   invoice_number: string;
   invoice_date: string;
   amount: number | null;
+  source_document_id?: string | null;
   is_archived: boolean;
   received_date?: string;
   invoice_amount_excluding_vat?: number | null;
@@ -74,6 +75,21 @@ export type ExportArchive = {
   size_bytes: number;
   totals: string[];
   generated_at: string;
+};
+export type InvoiceDocument = {
+  id: string;
+  company_id: string;
+  tax_period_id: string | null;
+  uploaded_by: string;
+  original_filename: string;
+  mime_type: "application/pdf" | "image/jpeg" | "image/png" | "image/webp";
+  byte_size: number;
+  sha256: string;
+  status: "uploaded" | "reviewing" | "confirmed" | "rejected";
+  suggested_ledger: "kuf" | "kif" | null;
+  linked_entry_id: string | null;
+  created_at: string;
+  updated_at: string;
 };
 
 export const emptyEntry = (): EntryForm => ({

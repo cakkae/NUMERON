@@ -31,3 +31,13 @@ UINO monetarna polja su nullable i unose se ručno; aplikacija ne računa PDV po
 ## 2026-08-16 — Server-side UINO izvoz i privatna arhiva
 
 CSV se generiše isključivo u server API ruti iz RLS-zaštićenih podataka, nikada iz HTML tabele. Redoslijed stavki je determinističan: KUF po datumu prijema pa ID-u, KIF po datumu fakture pa ID-u. Svaki fajl je UTF-8 sa CRLF redovima, SHA-256 hashom i strogim limitom od 5.000.000 bajtova; pri podjeli svaki dio dobija vlastiti zaglavni i zbirni slog te sekvencu `01`–`99`. CSV se čuva u privatnom `uino-exports` Storage bucketu, a nepromjenjivi metapodaci ostaju u `uino_exports`. Tipovi 06 i 07 se ne izvoze dok se poslovno ne potvrdi pravilo predznaka. Sva monetarna polja moraju imati eksplicitnu vrijednost prije izvoza; generator nikada ne dopisuje nulu niti obračunava PDV.
+
+## Faza 5A — privatni dokumenti i ručno knjiženje
+
+- Limit od 15 MB tumači se kao 15.000.000 bajtova, jednako ograničenju privatnog Supabase Storage bucketa.
+- MIME tip se ne prihvata samo iz browser metapodataka: server provjerava PDF/JPEG/PNG/WebP potpis u sadržaju i zahtijeva podudaranje s prijavljenim tipom. HEIC ostaje eksplicitno nepodržan.
+- Storage putanja je `<company_id>/<random_uuid>` bez originalnog naziva. Originalni naziv ostaje samo u zaštićenom zapisu baze.
+- Pregled se otvara signed URL-om koji traje 120 sekundi. Browser ne dobija service-role ključ niti trajnu javnu putanju.
+- KUF/KIF i period nikada se ne određuju automatski. Korisnik ih bira, ručno popunjava postojeću formu i potvrđuje dugmetom `Spremi i potvrdi`.
+- Potvrda, kreiranje stavke i obostrano povezivanje izvršavaju se u jednoj SQL funkciji/transakciji. Potvrđene stavke nastale iz dokumenta nije moguće brisati ili prevezati; ispravke se rade postojećim kontrolisanim tokom bez gubitka izvornog dokumenta.
+- Odbacivanje je terminalno i ne briše storage objekat. Brisanje storage objekta dozvoljeno je uploaderu samo za čišćenje neuspjelog uploada prije evidentiranja u tabeli.
