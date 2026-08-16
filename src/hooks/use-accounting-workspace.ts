@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { getPeriodValidationStatus, isValidOrEmptyJib, isValidOrEmptyVatNumber, validateBookEntries, validateEntryForm } from "@/lib/validation-engine";
-import type { BookTable, Company, Entry, EntryForm, Partner, PartnerForm, Period } from "@/types/accounting";
+import type { BookTable, Company, Entry, EntryForm, ExportArchive, Partner, PartnerForm, Period } from "@/types/accounting";
 
 export function useAccountingWorkspace() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -14,6 +14,7 @@ export function useAccountingWorkspace() {
   const [partners, setPartners] = useState<Partner[]>([]);
   const [purchases, setPurchases] = useState<Entry[]>([]);
   const [sales, setSales] = useState<Entry[]>([]);
+  const [exportArchives, setExportArchives] = useState<ExportArchive[]>([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -75,6 +76,12 @@ export function useAccountingWorkspace() {
     setSales((salesResult.data ?? []) as Entry[]);
   }
 
+  async function loadExports(periodId: string) {
+    const { data, error } = await createSupabaseBrowserClient().from("uino_exports").select("id, book_type, file_name, content_sha256, item_count, size_bytes, totals, generated_at").eq("tax_period_id", periodId).order("generated_at", { ascending: false });
+    if (error) return setMessage(error.message);
+    setExportArchives((data ?? []) as ExportArchive[]);
+  }
+
   useEffect(() => {
     void createSupabaseBrowserClient().auth.getUser().then(({ data }) => {
       setUserEmail(data.user?.email ?? null);
@@ -83,7 +90,7 @@ export function useAccountingWorkspace() {
     });
   }, []);
   useEffect(() => { if (activeCompanyId) void loadCompanyData(activeCompanyId); }, [activeCompanyId]);
-  useEffect(() => { if (activePeriodId) void loadEntries(activePeriodId); else { setPurchases([]); setSales([]); } }, [activePeriodId]);
+  useEffect(() => { if (activePeriodId) { void loadEntries(activePeriodId); void loadExports(activePeriodId); } else { setPurchases([]); setSales([]); setExportArchives([]); } }, [activePeriodId]);
 
   async function signIn(email: string, password: string) {
     setLoading(true);
@@ -169,5 +176,5 @@ export function useAccountingWorkspace() {
     await loadEntries(activePeriod.id);
   }
 
-  return { userEmail, loading, companies, activeCompanyId, setActiveCompanyId, activeCompany, periods, activePeriodId, setActivePeriodId, activePeriod, periodIsOpen, partners, purchases, sales, kufErrors, kifErrors, validationStatus, message, setMessage, signIn, signOut, createPeriod, setPeriodStatus, createPartner, saveEntry, mutateEntry };
+  return { userEmail, loading, companies, activeCompanyId, setActiveCompanyId, activeCompany, periods, activePeriodId, setActivePeriodId, activePeriod, periodIsOpen, partners, purchases, sales, exportArchives, refreshExports: loadExports, kufErrors, kifErrors, validationStatus, message, setMessage, signIn, signOut, createPeriod, setPeriodStatus, createPartner, saveEntry, mutateEntry };
 }

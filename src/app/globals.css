@@ -195,6 +195,15 @@ button.metric-card:hover { border-color: #bfdbfe; transform: translateY(-2px); b
 .additional-fields { border: 1px solid var(--slate-200); border-radius: 9px; background: var(--slate-50); }
 .additional-fields summary { padding: 12px 13px; color: var(--slate-700); cursor: pointer; font-size: .72rem; font-weight: 750; }
 .additional-fields .uino-fields { padding: 4px 13px 14px; }
+.export-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.export-card { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 14px; padding: 20px; }
+.export-card > div { min-width: 0; }
+.export-card small { display: block; color: var(--slate-500); font-size: .68rem; font-weight: 750; }
+.export-card strong { display: block; margin-top: 4px; color: var(--slate-900); font-size: 1.1rem; }
+.export-card p { margin: 4px 0 0; color: var(--slate-500); font-size: .7rem; }
+.export-card .button { grid-column: 1 / -1; justify-content: center; }
+.export-history-header { padding: 18px 20px; border-bottom: 1px solid var(--slate-100); }
+.export-file { display: flex; align-items: center; gap: 8px; color: var(--slate-700); }
 .drawer-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 8px; padding-top: 18px; border-top: 1px solid var(--slate-100); }
 .modal-card { position: absolute; top: 50%; left: 50%; width: min(440px, calc(100% - 28px)); border-radius: 13px; overflow: hidden; background: white; box-shadow: 0 25px 70px #07111f35; transform: translate(-50%, -50%); }
 .modal-title-icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9px; color: var(--blue-600); background: #eff6ff; }
@@ -264,6 +273,7 @@ button.metric-card:hover { border-color: #bfdbfe; transform: translateY(-2px); b
   .toolbar-count { margin-left: auto; }
   .drawer { width: 100%; }
   .form-row { grid-template-columns: 1fr; }
+  .export-grid { grid-template-columns: 1fr; }
   .login-page { display: block; background: var(--slate-50); }
   .login-brand { display: none; }
   .login-panel { min-height: 100vh; padding: 24px; }

@@ -27,3 +27,7 @@ UI je podijeljen na shell komponente i poslovni workspace hook. Dashboard je pre
 ## 2026-08-16 — UINO model bez izmišljanja PDV-a
 
 UINO monetarna polja su nullable i unose se ručno; aplikacija ne računa PDV po fiksnoj stopi. Legacy `amount` ostaje radi kompatibilnosti i zrcali samo ukupni iznos (`invoice_amount_with_vat` za KUF, `invoice_total_amount` za KIF). Stare KUF stavke dobijaju `received_date = invoice_date` kao najmanju sigurnu migracijsku pretpostavku jer prethodni model nije čuvao datum prijema. Identifikatori partnera mogu biti prazni za neobveznika, a tip 04 zahtijeva UINO vrijednosti od 12 odnosno 13 nula. Detaljno mapiranje i otvorene potvrde su u `docs/uino-field-mapping.md`.
+
+## 2026-08-16 — Server-side UINO izvoz i privatna arhiva
+
+CSV se generiše isključivo u server API ruti iz RLS-zaštićenih podataka, nikada iz HTML tabele. Redoslijed stavki je determinističan: KUF po datumu prijema pa ID-u, KIF po datumu fakture pa ID-u. Svaki fajl je UTF-8 sa CRLF redovima, SHA-256 hashom i strogim limitom od 5.000.000 bajtova; pri podjeli svaki dio dobija vlastiti zaglavni i zbirni slog te sekvencu `01`–`99`. CSV se čuva u privatnom `uino-exports` Storage bucketu, a nepromjenjivi metapodaci ostaju u `uino_exports`. Tipovi 06 i 07 se ne izvoze dok se poslovno ne potvrdi pravilo predznaka. Sva monetarna polja moraju imati eksplicitnu vrijednost prije izvoza; generator nikada ne dopisuje nulu niti obračunava PDV.

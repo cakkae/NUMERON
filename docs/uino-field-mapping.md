@@ -1,8 +1,8 @@
 # UINO mapiranje polja
 
-Ovaj dokument mapira format knjigovodstvenih evidencija iz službenog [Tehničkog uputstva UINO](https://www.uino.gov.ba/portal/wp-content/uploads/8-E-PROPISI/1-ePDV/3-Tehnicko-uputstvo-Dostavljanje-podataka-iz-knjigovodstvenih-evidencija.pdf) i [izmjena iz 2023. godine](https://www.uino.gov.ba/portal/wp-content/uploads/8-E-PROPISI/1-ePDV/3-3-BOS-Tehnicko-Upustvo-o-Izmjenama-i-dopunama-tehnickog-uputstvo-o-podnosenju-knjigovodstvenih-evidencija.pdf). Faza 4A priprema podatke; ne pravi CSV.
+Ovaj dokument mapira format knjigovodstvenih evidencija iz službenog [Tehničkog uputstva UINO](https://www.uino.gov.ba/portal/wp-content/uploads/8-E-PROPISI/1-ePDV/3-Tehnicko-uputstvo-Dostavljanje-podataka-iz-knjigovodstvenih-evidencija.pdf) i [izmjena iz 2023. godine](https://www.uino.gov.ba/portal/wp-content/uploads/8-E-PROPISI/1-ePDV/3-3-BOS-Tehnicko-Upustvo-o-Izmjenama-i-dopunama-tehnickog-uputstvo-o-podnosenju-knjigovodstvenih-evidencija.pdf).
 
-Opća pravila: datoteka je UTF-8, polja su razdvojena tačkom-zarezom, datum je `YYYY-MM-DD`, period `YYMM`, a vrijeme `HH:MM:SS`. Novčani iznosi imaju najviše 25 znakova, tačku kao decimalni separator i dvije decimale pri izvozu. Pojedinačno novčano polje smije ostati prazno kada se vrijednost ne može iskazati; aplikacija zato čuva `NULL`, a ne izmišljenu nulu. Kolona „Obavezno” u nastavku opisuje UINO slog, ne trenutno postojanje CSV funkcije.
+Opća pravila: datoteka je UTF-8, polja su razdvojena tačkom-zarezom, datum je `YYYY-MM-DD`, period `YYMM`, a vrijeme `HH:MM:SS`. Novčani iznosi imaju najviše 25 znakova, tačku kao decimalni separator i dvije decimale pri izvozu. Model dopušta `NULL` tokom unosa da ne bi izmišljao vrijednost, ali Faza 4B blokira izvoz dok svako monetarno polje nema eksplicitnu vrijednost; korisnik unosi `0.00` samo kada je poslovno tačno.
 
 ## Zaglavlje (isto mapiranje za KUF i KIF)
 
@@ -12,7 +12,7 @@ Opća pravila: datoteka je UTF-8, polja su razdvojena tačkom-zarezom, datum je 
 | 2 | PDV broj obveznika | `companies.vat_number` | 12 cifara | Da | `^[0-9]{12}$` | Podatak firme |
 | 3 | Porezni period | `tax_periods.year/month` | `YYMM` | Da | Valjan mjesec 01–12 | Pouzdano izračunato |
 | 4 | Tip datoteke | KUF: `1`; KIF: `2` | 1 cifra | Da | Samo `1` ili `2` | Pouzdano izračunato |
-| 5 | Redni broj datoteke u periodu | Još se ne čuva; odluka pripada Fazi 4B | `01`–`99` | Da | Dvije cifre | Ručno/izvozna evidencija |
+| 5 | Redni broj datoteke u periodu | `uino_exports.sequence` | `01`–`99` | Da | Dvije cifre; raste pri podjeli preko 5 MB | Pouzdano izračunato |
 | 6 | Datum kreiranja | Vrijeme kreiranja budućeg izvoza | `YYYY-MM-DD` | Da | Valjan datum | Pouzdano izračunato |
 | 7 | Vrijeme kreiranja | Vrijeme kreiranja budućeg izvoza | `HH:MM:SS` | Da | Valjano vrijeme | Pouzdano izračunato |
 
@@ -112,5 +112,4 @@ Tipovi su centralno verzionisani u `src/lib/document-types.ts`. Tipovi 01–05 d
 ## Otvorene poslovne potvrde
 
 - Uputstvo ne određuje aplikacijsko pravilo za predznak korektivnih dokumenata 06/07. Faza 4A zadržava postojeće pravilo nenegativnih unosa; način evidentiranja umanjenja mora se potvrditi prije CSV izvoza.
-- Redni broj datoteke u periodu zahtijeva evidenciju pokušaja/izvoza. Pošto arhiva izvoza nije u scopeu Faze 4A, polje se još ne čuva.
 - Za postojeće KUF stavke migracija postavlja `received_date = invoice_date`, jer stariji model nije imao datum prijema. Te stavke treba poslovno pregledati prije prvog izvoza.

@@ -65,6 +65,16 @@ export type EntryForm = {
 };
 export type PartnerForm = { name: string; address: string; vatNumber: string; jib: string };
 export type BookTable = "purchase_entries" | "sales_entries";
+export type ExportArchive = {
+  id: string;
+  book_type: "KUF" | "KIF";
+  file_name: string;
+  content_sha256: string;
+  item_count: number;
+  size_bytes: number;
+  totals: string[];
+  generated_at: string;
+};
 
 export const emptyEntry = (): EntryForm => ({
   partnerId: "", documentType: "01", invoiceNumber: "", invoiceDate: "", receivedDate: "",
