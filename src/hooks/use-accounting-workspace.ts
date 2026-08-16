@@ -90,11 +90,12 @@ export function useAccountingWorkspace() {
   }
 
   useEffect(() => {
-    void createSupabaseBrowserClient().auth.getUser().then(({ data }) => {
+    void (async () => {
+      const { data } = await createSupabaseBrowserClient().auth.getUser();
       setUserEmail(data.user?.email ?? null);
-      if (data.user) void loadCompanies();
+      if (data.user) await loadCompanies();
       setLoading(false);
-    });
+    })();
   }, []);
   useEffect(() => { if (activeCompanyId) { void loadCompanyData(activeCompanyId); void loadDocuments(activeCompanyId); } else setDocuments([]); }, [activeCompanyId]);
   useEffect(() => { if (activePeriodId) { void loadEntries(activePeriodId); void loadExports(activePeriodId); } else { setPurchases([]); setSales([]); setExportArchives([]); } }, [activePeriodId]);
@@ -102,9 +103,8 @@ export function useAccountingWorkspace() {
   async function signIn(email: string, password: string) {
     setLoading(true);
     const { data, error } = await createSupabaseBrowserClient().auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) return setMessage(error.message);
-    setUserEmail(data.user.email ?? email); setMessage(""); await loadCompanies();
+    if (error) { setLoading(false); return setMessage(error.message); }
+    setUserEmail(data.user.email ?? email); setMessage(""); await loadCompanies(); setLoading(false);
   }
 
   async function signOut() {
