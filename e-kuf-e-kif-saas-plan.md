@@ -40,10 +40,8 @@ Sve što korisnik vidi ili mijenja pripada aktivnoj firmi: partneri, dokumenti, 
 
 | Rola | Ovlasti |
 |---|---|
-| Vlasnik servisa | Dodaje firme, dodjeljuje korisnike, vidi sve firme i postavke. |
-| Knjigovođa | Vidi i uređuje samo firme koje mu je vlasnik dodijelio. |
-| Klijent | Opcionalno: vidi samo svoju firmu, dostavlja dokumente i prati status. |
-| Pregled | Može pregledati i preuzeti izvještaje, bez izmjena. |
+| Vlasnik servisa (`owner`) | Vlasnik je ujedno knjigovođa. Dodaje firme, dodjeljuje pristup i radi s više klijentskih firmi. |
+| Klijent (`client`) | Vidi samo svoju dodijeljenu firmu i njen pregled. Može preuzeti i dostaviti fakture kada se implementira modul dokumenata. |
 
 ## 3. MVP scope
 
@@ -200,7 +198,7 @@ Pretpostavka: fokusiran razvoj jednog proizvoda, sa redovnim pregledom stvarnog 
 
 - Kreirati repozitorij, staging i production okruženje.
 - Next.js aplikacija, Supabase projekt, migracije i osnovni CI.
-- Login, workspace, firme, korisnici i role.
+- Login, workspace, firme, korisnici i dvije role: `owner` i `client`.
 - Row Level Security politike i audit osnova.
 - Izbor aktivne firme.
 
@@ -282,7 +280,7 @@ MVP je spreman tek kada:
 
 - OCR pomoćnik za čitanje PDF fakture uz potvrdu korisnika.
 - Automatski import iz drugih računovodstvenih sistema.
-- Klijentski portal za dostavljanje ulaznih faktura.
+- Podsjetnici o roku predaje i nedostajućim dokumentima.
 - Notifikacije o roku predaje i nedostajućim dokumentima.
 - PDF/Excel izvještaji po firmi i periodu.
 - Komercijalni planovi, naplata i self-service registracija.
@@ -573,7 +571,7 @@ Implementiraj samo Fazu 6 iz plana. Fokus je produkcijska spremnost: CI, monitor
 | P1 | Excel/CSV import i PDF arhiva | 5 |
 | P1 | Produkcijski monitoring, backup i CI | 6 |
 | P2 | OCR pomoćnik sa potvrdom korisnika | poslije MVP-a |
-| P2 | Klijentski portal i podsjetnici | poslije MVP-a |
+| P2 | Podsjetnici | poslije MVP-a |
 | P3 | Integracije s drugim programima i naplata | poslije MVP-a |
 
 ## 16. Kako najefikasnije koristiti ograničenu Codex kvotu
