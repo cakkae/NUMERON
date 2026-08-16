@@ -12,6 +12,8 @@ Detaljan plan razvoja je u [e-kuf-e-kif-saas-plan.md](e-kuf-e-kif-saas-plan.md).
 
 Trenutno su dostupni prijava, izbor dodijeljene firme, porezni periodi, partneri, KUF/KIF unos i zajednička validacija. CSV izvoz nije implementiran.
 
+Radni prostor koristi odvojene Dashboard, KUF, KIF i Partneri poglede. Unos se otvara u desnom panelu, dok su aktivna firma, porezni period i status stalno dostupni u gornjoj traci.
+
 ## Pristup
 
 Postoje samo dvije role:

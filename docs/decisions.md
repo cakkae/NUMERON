@@ -19,3 +19,7 @@ KUF stavka u Fazi 2 sadrži partnera, broj i datum fakture te ukupni iznos. PDV 
 ## 2026-08-16 — Zajednička validacija KUF/KIF
 
 KUF i KIF koriste isti validation engine. Tipovi dokumenata `01–09` nalaze se u jednoj konfiguraciji verzije `2023-01`. Status `ready_for_export` samo označava da period nema blokirajućih grešaka; CSV se u Fazi 3 ne generiše.
+
+## 2026-08-16 — UI workspace
+
+UI je podijeljen na shell komponente i poslovni workspace hook. Dashboard je pregled, KUF/KIF i Partneri su odvojeni radni pogledi, a forme se otvaraju u desnom panelu. Supabase upiti i validation engine ostaju izvan prezentacijskih komponenti.
